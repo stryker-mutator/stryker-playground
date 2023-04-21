@@ -100,7 +100,6 @@ namespace Playground.Example.Source
         // System dependencies
         "System.dll",
         "System.Console.dll",
-        "System.Buffers.dll",
         "System.Collections.dll",
         "System.Core.dll",
         "System.Runtime.dll",
@@ -109,11 +108,10 @@ namespace Playground.Example.Source
         "System.Linq.Expressions.dll",
         "System.Linq.Parallel.dll",
         "System.Private.CoreLib.dll",
-        "mscorlib.dll",
         "netstandard.dll",
         
         // 3rd party dependencies
-        "NUnit.Framework.dll",
+        "nunit.framework.dll",
     };
 
 }
