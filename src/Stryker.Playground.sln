@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stryker.Playground.WebAssembly", "Stryker.Playground.WebAssembly\Stryker.Playground.WebAssembly.csproj", "{39C07328-A627-4E9C-A27D-CDCADF59EEDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stryker.Playground.Domain", "Stryker.Playground.Domain\Stryker.Playground.Domain.csproj", "{B281B8CA-B924-4D39-AEB3-CCC2AB4DC71E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{39C07328-A627-4E9C-A27D-CDCADF59EEDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39C07328-A627-4E9C-A27D-CDCADF59EEDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39C07328-A627-4E9C-A27D-CDCADF59EEDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39C07328-A627-4E9C-A27D-CDCADF59EEDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B281B8CA-B924-4D39-AEB3-CCC2AB4DC71E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B281B8CA-B924-4D39-AEB3-CCC2AB4DC71E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B281B8CA-B924-4D39-AEB3-CCC2AB4DC71E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B281B8CA-B924-4D39-AEB3-CCC2AB4DC71E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

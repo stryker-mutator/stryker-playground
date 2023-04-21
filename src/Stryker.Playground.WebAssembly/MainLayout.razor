@@ -1,0 +1,57 @@
+﻿@inherits LayoutComponentBase
+
+<header>
+  <nav class="navbar navbar-dark bg-dark px-3">
+    <a class="navbar-brand" href="#">
+      <img src="https://stryker-mutator.io/images/stryker.svg" width="32" height="32" class="d-inline-block align-top" alt="Stryker Mutator Logo">
+      <strong class="navbar-title">Stryker Playground</strong>
+    </a>
+  </nav>
+</header>
+
+<main style="background-color: #1b1b1d" class="container-fluid flex-grow-1 pb-5">
+  @Body
+</main>
+
+<div class="bg-dark">
+  <div class="container mb-3">
+    <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5 mb-5">
+      <div class="col mb-3">
+        <a href="/" class="d-flex align-items-center mb-3 link-dark text-decoration-none">
+          <img alt="Stryker Mutator Logo" src="https://stryker-mutator.io/images/stryker.svg" class="bi me-2" width="32" height="32" />
+        </a>
+        <p class="text-secondary">Powered by <a class="text-decoration-none" href="https://infosupport.com">Info Support</a></p>
+      </div>
+  
+      <div class="col mb-3">
+  
+      </div>
+  
+      <div class="col mb-3">
+        <h5 class="text-white">Community</h5>
+        <ul class="nav flex-column">
+          <li class="nav-item mb-2"><a href="https://twitter.com/stryker_mutator" class="nav-link p-0 text-secondary">Twitter</a></li>
+          <li class="nav-item mb-2"><a href="https://join.slack.com/t/stryker-mutator/shared_invite/enQtOTUyMTYyNTg1NDQ0LTU4ODNmZDlmN2I3MmEyMTVhYjZlYmJkOThlNTY3NTM1M2QxYmM5YTM3ODQxYmJjY2YyYzllM2RkMmM1NjNjZjM" class="nav-link p-0 text-secondary">Slack</a></li>
+        </ul>
+      </div>
+  
+      <div class="col mb-3">
+        <h5 class="text-white">Stryker Family</h5>
+        <ul class="nav flex-column">
+            <li class="nav-item mb-2"><a href="https://github.com/stryker-mutator/stryker-js" class="nav-link p-0 text-secondary">Stryker.NET (C#)</a></li>
+            <li class="nav-item mb-2"><a href="https://github.com/stryker-mutator/stryker-net" class="nav-link p-0 text-secondary">StrykerJS (JS & TS)</a></li>
+            <li class="nav-item mb-2"><a href="https://github.com/stryker-mutator/stryker4s" class="nav-link p-0 text-secondary">Stryker4s (Scala)</a></li>
+        </ul>
+      </div>
+  
+      <div class="col mb-3">
+        <h5 class="text-white">Other Frameworks</h5>
+          <ul class="nav flex-column">
+            <li class="nav-item mb-2"><a href="https://pitest.org/" class="nav-link p-0 text-secondary">PITest (Java)</a></li>
+            <li class="nav-item mb-2"><a href="https://github.com/infection/infection" class="nav-link p-0 text-secondary">Infection (PHP)</a></li>
+          </ul>
+  
+      </div>
+    </footer>
+  </div>
+</div>
