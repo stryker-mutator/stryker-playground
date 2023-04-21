@@ -316,7 +316,6 @@ namespace Stryker.Playground.Domain.TestRunners
             runSettings[FrameworkPackageSettings.NumberOfTestWorkers] = 0;	
             runSettings[FrameworkPackageSettings.SynchronousEvents] = true;	
             runSettings[FrameworkPackageSettings.RunOnMainThread] = true;
-            runSettings[FrameworkPackageSettings.StopOnError] = true;
 
             return runSettings;	
         }	

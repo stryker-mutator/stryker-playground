@@ -2,5 +2,5 @@
 
 public interface ITestRunner
 {
-    public Task<TestRunResult> RunTests(byte[] assemblyBytes, int? activeMutantId = null);
+    public Task<TestRunResult> RunTests(byte[] assemblyBytes, int? activeMutantId = null, bool stopOnError = false);
 }
