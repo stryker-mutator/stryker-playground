@@ -31,7 +31,7 @@ public class PlaygroundConstants
         {
             Background = "#000000",
         },
-        Columns = 200,
+        Columns = 80,
         Rows = 12,
     };
     
