@@ -16,6 +16,9 @@ public partial class Playground
 
     [Inject]
     public HttpClient HttpClient { get; set; } = default!;
+
+    [Inject] 
+    public NavigationManager NavManager { get; set; } = default!;
     
     private StandaloneCodeEditor SourceCodeEditor { get; set; }  = default!;
     
@@ -184,9 +187,18 @@ public partial class Playground
     {
         foreach (var lib in PlaygroundConstants.DefaultLibraries)
         {
-            await using var referenceStream = await HttpClient.GetStreamAsync($"/_framework/{lib}");
-            _references.Add(MetadataReference.CreateFromStream(referenceStream));
-            await Terminal.WriteAndScroll($"Loaded {lib}");
+            await Terminal.WriteAndScroll($"Loading {lib}");
+
+            try
+            {
+                await LoadLibrary(lib);
+            }
+            catch (Exception e)
+            {
+                await Terminal.Error("Initialization failed! Unable to load system libraries");
+                await Terminal.WriteAndScroll(e.Message);
+                return;
+            }
         }
 
         Initialized = true;
@@ -195,6 +207,20 @@ public partial class Playground
         await Terminal.WriteAndScroll("Initialization complete.");
         await Terminal.Success("Get started by editing and running some unit tests!");
         await Terminal.Focus();
+    }
+
+    private async Task LoadLibrary(string lib)
+    {
+        try
+        {
+            await using var referenceStream = await HttpClient.GetStreamAsync($"/_framework/{lib}");
+            _references.Add(MetadataReference.CreateFromStream(referenceStream));
+        }
+        catch (Exception)
+        {
+            await using var referenceStream = await HttpClient.GetStreamAsync($"https://rachied.github.io/stryker-playground/_framework/{lib}");
+            _references.Add(MetadataReference.CreateFromStream(referenceStream));
+        }
     }
 }
 
