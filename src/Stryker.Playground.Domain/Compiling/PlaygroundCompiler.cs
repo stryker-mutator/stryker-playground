@@ -30,12 +30,19 @@ public class PlaygroundCompiler : IPlaygroundCompiler
         Console.WriteLine($"Mutated the syntax tree with {orchestrator.MutantCount} mutations:");
         Console.WriteLine(mutatedTree.ToFullString());
 
-        input.SourceCode = mutatedTree.ToString();
+        var mutationCompileInput = new CompilationInput
+        {
+            References = input.References,
+            TestCode = input.TestCode,
+            SourceCode = mutatedTree.ToFullString(),
+            UsingStatementNamespaces = input.UsingStatementNamespaces,
+        };
 
-        var compilationResult = await Compile(input);
+        var compilationResult = await Compile(mutationCompileInput);
 
         return new MutantCompilationResult
         {
+            OriginalTree = sourceCodeTree,
             Mutants = orchestrator.Mutants,
             Diagnostics = compilationResult.Diagnostics,
             EmittedBytes = compilationResult.EmittedBytes,

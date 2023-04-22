@@ -1,8 +1,12 @@
 using BlazorMonaco.Editor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.CodeAnalysis;
+using Microsoft.JSInterop;
 using SpawnDev.BlazorJS.WebWorkers;
 using Stryker.Core.Common.Mutants;
+using Stryker.Core.Common.Options;
+using Stryker.Core.Common.Reporters.Json;
+using Stryker.Playground.Domain;
 using Stryker.Playground.Domain.Compiling;
 using Stryker.Playground.Domain.TestRunners;
 using XtermBlazor;
@@ -19,6 +23,9 @@ public partial class Playground
 
     [Inject] 
     public NavigationManager NavManager { get; set; } = default!;
+
+    [Inject]
+    public IJSRuntime JsRuntime { get; set; } = default!;
     
     private StandaloneCodeEditor SourceCodeEditor { get; set; }  = default!;
     
@@ -28,6 +35,11 @@ public partial class Playground
 
     private bool Busy { get; set; } = true;
     private bool Initialized { get; set; } = false;
+    
+    private JsonReport? _jsonReport = null;
+    private bool _displayReport = false;
+
+    public bool DisplayReport => _jsonReport is not null && _displayReport;
 
     private readonly IPlaygroundCompiler _compiler = new PlaygroundCompiler();
     
@@ -107,6 +119,12 @@ public partial class Playground
         var mutationScore = ((double)mutatedCompilation.Mutants.Count(x => x.ResultStatus != MutantStatus.Survived) / mutants.Count) * 100;
 
         await Terminal.DisplayMutationScore(mutationScore);
+
+        var projectComponent = ProjectComponentBuilder.BuildProjectComponent(mutatedCompilation.OriginalTree, mutants);
+
+        _jsonReport = JsonReport.Build(new StrykerOptions(), projectComponent);
+
+        await DisplayMutationReport();
     }
     
     public async Task ExecuteUnitTests()
@@ -207,6 +225,12 @@ public partial class Playground
         await Terminal.WriteAndScroll("Initialization complete.");
         await Terminal.Success("Get started by editing and running some unit tests!");
         await Terminal.Focus();
+    }
+    
+    private async Task DisplayMutationReport()
+    {
+        await JsRuntime.InvokeVoidAsync("setMutationReport", _jsonReport?.ToJsonHtmlSafe());
+        _displayReport = true;
     }
 
     private async Task LoadLibrary(string lib)

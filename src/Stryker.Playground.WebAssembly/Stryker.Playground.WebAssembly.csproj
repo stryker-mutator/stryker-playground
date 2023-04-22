@@ -21,4 +21,8 @@
       <ProjectReference Include="..\Stryker.Playground.Domain\Stryker.Playground.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="wwwroot\js\mutation-test-elements.js" />
+    </ItemGroup>
+
 </Project>
