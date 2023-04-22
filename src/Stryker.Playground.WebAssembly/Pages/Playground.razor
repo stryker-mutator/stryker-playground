@@ -13,14 +13,11 @@
 <div id="terminal-wrapper" class="row">
     <div class="row">
 
-        @if (Busy && Initialized)
-        {
-            <div class="container">
-                <div class="pg-progress-bar">
-                    <div class="pg-progress-bar-value"></div>
-                </div>
+        <div class="container @(Busy && Initialized ? string.Empty : "invisible")">
+            <div class="pg-progress-bar">
+                <div class="pg-progress-bar-value"></div>
             </div>
-        }
+        </div>
         
         <Xterm @ref="Terminal" Options="PlaygroundConstants.XTermOptions" OnFirstRender="@OnFirstRender"/>
     </div>
