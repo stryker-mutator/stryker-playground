@@ -13,8 +13,8 @@
         <PackageReference Include="BlazorMonaco" Version="3.0.0" />
         <PackageReference Include="XtermBlazor" Version="1.8.1" />
         <PackageReference Include="Crayon" Version="2.0.69" />
-        <PackageReference Include="SpawnDev.BlazorJS" Version="2.1.7" />
-        <PackageReference Include="SpawnDev.BlazorJS.WebWorkers" Version="2.1.7" />
+        <PackageReference Include="SpawnDev.BlazorJS" Version="2.1.12" />
+        <PackageReference Include="SpawnDev.BlazorJS.WebWorkers" Version="2.1.12" />
     </ItemGroup>
 
     <ItemGroup>
