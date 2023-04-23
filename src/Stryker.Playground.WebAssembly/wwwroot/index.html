@@ -14,7 +14,16 @@
 </head>
 
 <body class="bg-dark">
-    <div id="app" style="min-height: 100vh;">Loading...</div>
+    <div id="app">
+        <div style="position:absolute; top:30vh; width:100%; text-align:center">
+            <img src="stryker-man.svg" alt="Stryker man" style="width: 200px; height: auto;">
+            <div style="display:flex; gap:10px; justify-content:center; align-items:center">
+                <div class="spinner-border text-warning" role="status"></div>
+                Loading..
+            </div>
+        </div>
+    </div>
+
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
