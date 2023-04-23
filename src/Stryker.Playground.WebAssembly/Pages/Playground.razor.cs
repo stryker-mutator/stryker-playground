@@ -184,10 +184,33 @@ public partial class Playground
         
         await Terminal.Error($"Compilation failed with {errorCount} errors and {warnCount} warnings");
 
+        var decorations = new List<ModelDeltaDecoration>();
+
         foreach (var diagnostic in diagnostics.Where(x => x.Severity == DiagnosticSeverity.Error))
         {
+            var span = diagnostic.Location.GetLineSpan();
+            var range = new BlazorMonaco.Range(
+                span.StartLinePosition.Line + 1,
+                span.StartLinePosition.Character + 1,
+                span.EndLinePosition.Line + 1,
+                span.EndLinePosition.Character + 1);
+
+            var decoration = new ModelDeltaDecoration()
+            {
+                Options = new ModelDecorationOptions()
+                {
+                    IsWholeLine = false,
+                    InlineClassName = "squiggly-line"
+                },
+                Range = range,
+            };
+
+            decorations.Add(decoration);
+
             await Terminal.Error(diagnostic.ToString());
         }
+
+        await SourceCodeEditor.DeltaDecorations(Array.Empty<string>(), decorations.ToArray());
     }
 
     private async Task<CompilationInput> GetInput()
@@ -203,10 +226,10 @@ public partial class Playground
 
     private async Task OnFirstRender()
     {
+        await Terminal.WriteAndScroll("Loading dependencies, please wait..");
+
         foreach (var lib in PlaygroundConstants.DefaultLibraries)
         {
-            await Terminal.WriteAndScroll($"Loading {lib}");
-
             try
             {
                 await LoadLibrary(lib);
@@ -222,8 +245,13 @@ public partial class Playground
         Initialized = true;
         Busy = false;
         
-        await Terminal.WriteAndScroll("Initialization complete.");
-        await Terminal.Success("Get started by editing and running some unit tests!");
+        await Terminal.Clear();
+
+        foreach (var line in PlaygroundConstants.WelcomeMessageLines)
+        {
+            await Terminal.WriteAndScroll(line);
+        }
+
         await Terminal.Focus();
     }
     

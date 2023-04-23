@@ -5,6 +5,22 @@ namespace Stryker.Playground.WebAssembly;
 
 public class PlaygroundConstants
 {
+    public static string[] WelcomeMessageLines = 
+    {
+        "Welcome to the Stryker Playground!",
+        "This is an interactive demo of Stryker.NET, the mutation testing framework for .NET.",
+        "",
+        "Mutation testing is a technique for identifying weaknesses in your test suite by injecting bugs (mutations)",
+        "into your source code and seeing if your tests can catch them.",
+        "This results in a mutation score, which is the percentage of mutations that are killed by your tests.",
+        "Code coverage only tells you how much of your code is executed by your tests, whereas mutation score measures how well",
+        "your tests are actually detecting faults in your code.",
+        "",
+        "To get started, run the mutation tests by clicking 'Run Mutation Tests'. This will show your initial mutation score.",
+        "Edit your tests (and source, if you want) and then rerun the mutation tests to see how your score improves."
+    };
+
+    
     public static StandaloneEditorConstructionOptions EditorOptions(StandaloneCodeEditor editor)
     {
         return new StandaloneEditorConstructionOptions
