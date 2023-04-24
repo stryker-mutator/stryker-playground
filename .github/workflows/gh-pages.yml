@@ -5,7 +5,7 @@ permissions:
 
 on:
     push:
-        branches: [main]
+        branches: [main, dev]
 
 jobs:
     deploy-to-github-pages:
@@ -17,7 +17,7 @@ jobs:
               uses: actions/setup-dotnet@v1
               with:
                   dotnet-version: 7.0.x
-                  include-prerelease: true
+                  include-prerelease: false
 
             - name: Publish .NET Core Project
               run: dotnet publish src/Stryker.Playground.WebAssembly/Stryker.Playground.WebAssembly.csproj -c Release -o release --nologo

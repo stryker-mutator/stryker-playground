@@ -8,10 +8,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BlazorMonaco" Version="3.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.4" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.4" PrivateAssets="all" />
+        <PackageReference Include="BlazorMonaco" Version="3.0.0" />
         <PackageReference Include="XtermBlazor" Version="1.8.1" />
+        <PackageReference Include="Crayon" Version="2.0.69" />
+        <PackageReference Include="SpawnDev.BlazorJS" Version="2.1.12" />
+        <PackageReference Include="SpawnDev.BlazorJS.WebWorkers" Version="2.1.12" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Stryker.Playground.Domain\Stryker.Playground.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="wwwroot\js\mutation-test-elements.js" />
     </ItemGroup>
 
 </Project>

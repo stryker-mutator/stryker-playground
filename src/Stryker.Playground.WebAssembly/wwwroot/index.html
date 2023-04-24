@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" class="h-100">
+<html lang="en" class="h-100" xmlns="http://www.w3.org/1999/html">
 
 <head>
     <meta charset="utf-8" />
     <title>Stryker Playground</title>
     <base href="/" />
+    <link data-rh="true" rel="icon" href="images/stryker.svg">
     <link href="css/app.css" rel="stylesheet" />
     <link href="_content/XtermBlazor/XtermBlazor.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
@@ -14,7 +15,16 @@
 </head>
 
 <body class="bg-dark">
-    <div id="app" style="min-height: 100vh;">Loading...</div>
+    <div id="app">
+        <div style="position:absolute; top:30vh; width:100%; text-align:center">
+            <img src="images/stryker-man.svg" alt="Stryker man" style="width: 200px; height: auto;">
+            <div style="display:flex; gap:10px; justify-content:center; align-items:center">
+                <div class="spinner-border text-warning" role="status"></div>
+                Loading..
+            </div>
+        </div>
+    </div>
+
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
@@ -47,11 +57,21 @@
         }(window.location))
     </script>
 
+    <script type="text/javascript">
+
+        function setMutationReport(jsonData) {
+            var iframe = document.getElementById("stryker-report");
+            var app = iframe.contentWindow.document.querySelector("mutation-test-report-app");
+            app.report = JSON.parse(jsonData);
+        }
+    </script>
+
     <script src="_content/XtermBlazor/XtermBlazor.min.js"></script>
     <script src="_content/BlazorMonaco/jsInterop.js"></script>
     <script src="_content/BlazorMonaco/lib/monaco-editor/min/vs/loader.js"></script>
     <script src="_content/BlazorMonaco/lib/monaco-editor/min/vs/editor/editor.main.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
+    <script src="js/mutation-test-elements.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 </body>
 
