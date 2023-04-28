@@ -101,14 +101,16 @@ public partial class Playground
             return;
         }
         
-        await Terminal.WriteAndScroll("Adding mutants..");
+        await Terminal.WriteAndScroll("Mutating your source..");
 
         var mutatedCompilation = await _compiler.CompileWithMutations(input);
         var mutants = mutatedCompilation.Mutants.ToList();
+        
+        await Terminal.WriteAndScroll($"Generated {mutants.Count} mutants");
 
         foreach (var mutant in mutatedCompilation.Mutants)
         {
-            await Terminal.Write($"Running test suite for mutant {mutant.DisplayName}");
+            await Terminal.Write($"Running tests for mutant {mutant.DisplayName}");
             var testResult = await RunTests(mutatedCompilation, mutant.Id, true);
 
             mutant.ResultStatus = testResult.Status switch

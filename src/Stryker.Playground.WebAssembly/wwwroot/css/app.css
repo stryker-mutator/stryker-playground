@@ -82,10 +82,19 @@ html, body {
     height: 100%;
 }
 
+.nav-tabs {
+    border-bottom: 2px solid #282828;
+}
+
 .xterm .xterm-viewport{
     overflow-y: hidden !important;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+}
+
+.not-allowed{
+    pointer-events: auto;
+    cursor: not-allowed! important;
 }
 
 .xterm{
