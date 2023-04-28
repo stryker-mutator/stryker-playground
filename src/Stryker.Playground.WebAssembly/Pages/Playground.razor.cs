@@ -297,9 +297,8 @@ public partial class Playground
         catch (Exception)
         {
             // TODO: Look into setting this as an environment variable
-            // This value is needed because when hosted on gh-pages, NavigationManager.Uri returns https://stryker-mutator.github.io/ for this page
-            const string githubPagesHost = "https://stryker-mutator.github.io/stryker-playground";
-            await using var referenceStream = await HttpClient.GetStreamAsync($"{githubPagesHost}/_framework/{lib}");
+            const string staticFileHost = "https://stryker-mutator.io/stryker-playground/";
+            await using var referenceStream = await HttpClient.GetStreamAsync($"{staticFileHost}/_framework/{lib}");
             _references.Add(MetadataReference.CreateFromStream(referenceStream));
         }
     }
