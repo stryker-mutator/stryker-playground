@@ -9,6 +9,7 @@ using Stryker.Core.Common.Reporters.Json;
 using Stryker.Playground.Domain;
 using Stryker.Playground.Domain.Compiling;
 using Stryker.Playground.Domain.TestRunners;
+using Stryker.Playground.WebAssembly.Services;
 using XtermBlazor;
 
 namespace Stryker.Playground.WebAssembly.Pages;
@@ -26,6 +27,9 @@ public partial class Playground
 
     [Inject]
     public IJSRuntime JsRuntime { get; set; } = default!;
+
+    [Inject] 
+    private BrowserResizeService Browser { get; set; } = default!;
     
     private StandaloneCodeEditor SourceCodeEditor { get; set; }  = default!;
     
@@ -52,6 +56,7 @@ public partial class Playground
             return;
         }
         
+        _displayReport = false;
         Busy = true;
         await ExecuteMutationTests();
         Busy = false;
@@ -63,7 +68,8 @@ public partial class Playground
         {
             return;
         }
-        
+
+        _displayReport = false;
         Busy = true;
         await ExecuteUnitTests();
         Busy = false;
@@ -95,14 +101,16 @@ public partial class Playground
             return;
         }
         
-        await Terminal.WriteAndScroll("Adding mutants..");
+        await Terminal.WriteAndScroll("Mutating your source..");
 
         var mutatedCompilation = await _compiler.CompileWithMutations(input);
         var mutants = mutatedCompilation.Mutants.ToList();
+        
+        await Terminal.WriteAndScroll($"Generated {mutants.Count} mutants");
 
         foreach (var mutant in mutatedCompilation.Mutants)
         {
-            await Terminal.Write($"Running test suite for mutant {mutant.DisplayName}");
+            await Terminal.Write($"Running tests for mutant {mutant.DisplayName}");
             var testResult = await RunTests(mutatedCompilation, mutant.Id, true);
 
             mutant.ResultStatus = testResult.Status switch
@@ -224,6 +232,14 @@ public partial class Playground
         };
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        await JsRuntime.InvokeAsync<object>("browserResize.registerResizeCallback");
+        BrowserResizeService.OnResize += OnBrowserResize;
+
+        await base.OnInitializedAsync();
+    }
+
     private async Task OnFirstRender()
     {
         await Terminal.WriteAndScroll("Loading dependencies, please wait..");
@@ -253,8 +269,18 @@ public partial class Playground
         }
 
         await Terminal.Focus();
+
+        await SourceCodeEditor.Layout();
+        await TestCodeEditor.Layout();
     }
-    
+
+    private async Task OnBrowserResize()
+    {
+        Console.WriteLine("Adjusting editor sizes!");
+        await SourceCodeEditor.Layout();
+        await TestCodeEditor.Layout();
+    }
+
     private async Task DisplayMutationReport()
     {
         await JsRuntime.InvokeVoidAsync("setMutationReport", _jsonReport?.ToJsonHtmlSafe());
@@ -270,7 +296,10 @@ public partial class Playground
         }
         catch (Exception)
         {
-            await using var referenceStream = await HttpClient.GetStreamAsync($"https://rachied.github.io/stryker-playground/_framework/{lib}");
+            // TODO: Look into setting this as an environment variable
+            // This value is needed because when hosted on gh-pages, NavigationManager.Uri returns https://stryker-mutator.github.io/ for this page
+            const string githubPagesHost = "https://stryker-mutator.github.io/stryker-playground";
+            await using var referenceStream = await HttpClient.GetStreamAsync($"{githubPagesHost}/_framework/{lib}");
             _references.Add(MetadataReference.CreateFromStream(referenceStream));
         }
     }

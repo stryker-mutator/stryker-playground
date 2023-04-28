@@ -4,6 +4,7 @@ using SpawnDev.BlazorJS;
 using SpawnDev.BlazorJS.WebWorkers;
 using Stryker.Playground.Domain.TestRunners;
 using Stryker.Playground.WebAssembly;
+using Stryker.Playground.WebAssembly.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -16,6 +17,8 @@ builder.Services.AddWebWorkerService();
 
 // Web Worker services must be added as a singleton
 builder.Services.AddSingleton<ITestRunner, TestRunner>();
+
+builder.Services.AddSingleton<BrowserResizeService>();
 
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 

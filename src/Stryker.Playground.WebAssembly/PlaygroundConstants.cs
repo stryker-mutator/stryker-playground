@@ -25,7 +25,7 @@ public class PlaygroundConstants
     {
         return new StandaloneEditorConstructionOptions
         {
-            AutomaticLayout = true,
+            AutomaticLayout = false,
             Language = "csharp",
             Theme = "vs-dark",
             Value = editor.Id.StartsWith("test") 
@@ -62,7 +62,7 @@ namespace Playground.Example.Tests
     public class RoboBarTests
     {
         [Test]
-        public void RoboBar_OffersBeer_When_CustomerIs18Plus()
+        public void GetGreetings_WhenCustomerIs18Plus_GetsBeer()
         {
             var bar = new RoboBar();
             var response = bar.GetGreeting(19);
@@ -71,7 +71,7 @@ namespace Playground.Example.Tests
         }
 
         [Test]
-        public void RoboBar_DeniesService_When_CustomerIsUnderage()
+        public void GetGreetings_WhenCustomerIsUnderage_GetsDenied()
         {
             var bar = new RoboBar();
             var response = bar.GetGreeting(17);

@@ -1,59 +1,111 @@
 ﻿@page "/"
 
-<div id="editors-wrapper" class="row">
-    
-    <iframe
-        hidden="@(!DisplayReport)"
-        class="editor-wrapper"
-            id="stryker-report" 
-            srcdoc="<!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset='UTF-8'>
-                        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                        <script defer src='https://www.unpkg.com/mutation-testing-elements'></script>
-                    </head>
-                    <body>
-                    <mutation-test-report-app title-postfix='Stryker Playground Report'>
-                        Your browser doesn't support <a href='https://caniuse.com/#search=custom%20elements'>custom elements</a>.
-                        Please use a latest version of an evergreen browser (Firefox, Chrome, Safari, Opera, etc).
-                    </mutation-test-report-app>
-                    <script>
-                        const app = document.querySelector('mutation-test-report-app');
-    
-                        function updateTheme() {
-                            document.body.style.backgroundColor = app.themeBackgroundColor;
-                        }
-                        app.addEventListener('theme-changed', updateTheme);
-                        updateTheme();
-                    </script>
-                    </body>
-                    </html>"></iframe>
-    
-            <div class="col-1 col-md col-xs-12 editor-wrapper" hidden="@DisplayReport">
-                <StandaloneCodeEditor @ref="TestCodeEditor" Id="test-editor" CssClass="playground-editor row" ConstructionOptions="PlaygroundConstants.EditorOptions"/>
-            </div>
-    
-            <div class="col-1 col-md col-xs-12 editor-wrapper" hidden="@DisplayReport">
-                <StandaloneCodeEditor @ref="SourceCodeEditor" Id="source-editor" CssClass="playground-editor row" ConstructionOptions="PlaygroundConstants.EditorOptions"/>
-            </div>
-</div>
+<div class="container-fluid h-100">
 
-<div id="terminal-wrapper" class="row">
-    <div class="row">
-
-        <div class="container @(Busy && Initialized ? string.Empty : "invisible")">
-            <div class="pg-progress-bar">
-                <div class="pg-progress-bar-value"></div>
+    <div class="h-100 col-12">
+        
+        <div class="row">
+            <div class="col">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <button class="nav-link @(DisplayReport ? "text-warning" : "active")" 
+                           onclick="@(() => { _displayReport = false; })"
+                           aria-current="page" href="#">Editor</button>
+                    </li>
+                    <li class="nav-item @(_jsonReport is null ? "not-allowed" : string.Empty)">
+                        <button 
+                            class="nav-link @(DisplayReport ? "active" : "text-warning") @(_jsonReport is null ? "disabled" : string.Empty)" 
+                            href="#" tabindex="-1" 
+                            onclick="@(() => { _displayReport = true; })"
+                            aria-disabled="@(_jsonReport is null)">Mutation Report</button>
+                    </li>
+                </ul>
             </div>
         </div>
-        
-        <Xterm @ref="Terminal" Options="PlaygroundConstants.XTermOptions" OnFirstRender="@OnFirstRender"/>
-    </div>
-    
-    <div class="container-fluid">
-        <button type="button" disabled="@Busy" class="btn btn-outline-danger" onclick="@(async () => await OnClick_StartMutationTests())" >Mutation test</button>
-        <button type="button" disabled="@Busy" class="btn btn-outline-warning" onclick="@(async () => await OnClick_StartUnitTests())">Unit test</button>
-        <button type="button" hidden="@(_jsonReport == null)" class="btn btn-outline-info" onclick="@(() => { _displayReport = !_displayReport; })"> @(_displayReport ? "Edit code" : "View report")</button> 
+
+        <div class="row" style="height:90%" hidden="@(!DisplayReport)">
+            <iframe
+                id="stryker-report"
+                class="p-4"
+                srcdoc="<!DOCTYPE html>
+                                    <html>
+                                    <head>
+                                        <meta charset='UTF-8'>
+                                        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                                        <script defer src='https://www.unpkg.com/mutation-testing-elements'></script>
+                                    </head>
+                                    <body>
+                                    <mutation-test-report-app title-postfix='Stryker Playground Report'>
+                                        Your browser doesn't support <a href='https://caniuse.com/#search=custom%20elements'>custom elements</a>.
+                                        Please use a latest version of an evergreen browser (Firefox, Chrome, Safari, Opera, etc).
+                                    </mutation-test-report-app>
+                                    <script>
+                                        const app = document.querySelector('mutation-test-report-app');
+                    
+                                        function updateTheme() {
+                                            document.body.style.backgroundColor = app.themeBackgroundColor;
+                                        }
+                                        app.addEventListener('theme-changed', updateTheme);
+                                        updateTheme();
+                                    </script>
+                                    </body>
+                                    </html>"></iframe>
+        </div>
+
+        <div class="row py-2" hidden="@DisplayReport">
+            <div class="col-md col-lg-6">
+                <div class="pane-flex">
+            
+                    <div style="flex: 1 1 0;">
+                        <StandaloneCodeEditor @ref="SourceCodeEditor"
+                                              Id="source-editor"
+                                              CssClass="playground-editor"
+                                              ConstructionOptions="PlaygroundConstants.EditorOptions"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md col-lg-6">
+                <div class="pane-flex">
+            
+                    <div style="flex: 1 1 0;">
+                        <StandaloneCodeEditor @ref="TestCodeEditor"
+                                              Id="test-editor"
+                                              CssClass="playground-editor"
+                                              ConstructionOptions="PlaygroundConstants.EditorOptions"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="playground-controls" class="row" hidden="@DisplayReport">
+            <div class="col-12">
+                
+                <div class="row">
+                
+                    <div class="container @(Busy && Initialized ? string.Empty : "invisible")">
+                        <div class="pg-progress-bar">
+                            <div class="pg-progress-bar-value"></div>
+                        </div>
+                    </div>
+                
+                    <Xterm @ref="Terminal" Options="PlaygroundConstants.XTermOptions" OnFirstRender="@OnFirstRender"/>
+                </div>
+
+                <div class="row">
+                    <div class="container-fluid">
+                        <button type="button"
+                                disabled="@Busy"
+                                class="btn btn-outline-danger"
+                                onclick="@(async () => await OnClick_StartMutationTests())">Run Mutation Tests</button>
+                
+                        <button type="button"
+                                disabled="@Busy"
+                                class="btn btn-outline-warning"
+                                onclick="@(async () => await OnClick_StartUnitTests())">Run Unit Tests</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
