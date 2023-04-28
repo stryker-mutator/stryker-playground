@@ -1,13 +1,13 @@
 ﻿@page "/"
 
-<div class="container-fluid">
+<div class="container-fluid h-100">
+
     <div class="h-100 g-2 row">
-            
-            <div class="col-12" hidden="@(!DisplayReport)">
-                <iframe
-                    id="stryker-report"
-                        class="p-4"
-                            srcdoc="<!DOCTYPE html>
+        <div class="col-12" style="height:80%" hidden="@(!DisplayReport)">
+            <iframe
+                id="stryker-report"
+                class="p-4"
+                srcdoc="<!DOCTYPE html>
                                     <html>
                                     <head>
                                         <meta charset='UTF-8'>
@@ -30,66 +30,65 @@
                                     </script>
                                     </body>
                                     </html>"></iframe>
-            </div>
-            
-            <div class="col-md col-lg-6">
-                <div class="pane-flex">
-    
-                    <div style="flex: 1 1 0;">
-                        <!-- Src editor content here -->
-                        <StandaloneCodeEditor @ref="SourceCodeEditor"
-                                              Id="source-editor"
-                                              CssClass="playground-editor"
-                                              ConstructionOptions="PlaygroundConstants.EditorOptions"/>
-                    </div>
+        </div>
+
+        <div class="col-md col-lg-6" hidden="@DisplayReport">
+            <div class="pane-flex">
+
+                <div style="flex: 1 1 0;">
+                    <StandaloneCodeEditor @ref="SourceCodeEditor"
+                                          Id="source-editor"
+                                          CssClass="playground-editor"
+                                          ConstructionOptions="PlaygroundConstants.EditorOptions"/>
                 </div>
             </div>
-            <div class="col-md col-lg-6">
-                <div class="pane-flex">
-    
-                    <div style="flex: 1 1 0;">
-                        <StandaloneCodeEditor @ref="TestCodeEditor"
-                                              Id="test-editor"
-                                              CssClass="playground-editor"
-                                              ConstructionOptions="PlaygroundConstants.EditorOptions"/>
-                    </div>
+        </div>
+        <div class="col-md col-lg-6" hidden="@DisplayReport">
+            <div class="pane-flex">
+
+                <div style="flex: 1 1 0;">
+                    <StandaloneCodeEditor @ref="TestCodeEditor"
+                                          Id="test-editor"
+                                          CssClass="playground-editor"
+                                          ConstructionOptions="PlaygroundConstants.EditorOptions"/>
                 </div>
             </div>
-            <div class="col-12">
-                <div class="pane-flex">
-    
-                    <div id="playground-controls" class="row">
-                        <div class="row" hidden="@DisplayReport">
-    
-                            <div class="container @(Busy && Initialized ? string.Empty : "invisible")">
-                                <div class="pg-progress-bar">
-                                    <div class="pg-progress-bar-value"></div>
-                                </div>
+        </div>
+        <div class="col-12">
+            <div class="pane-flex">
+
+                <div id="playground-controls" class="row">
+                    <div class="row" hidden="@DisplayReport">
+
+                        <div class="container @(Busy && Initialized ? string.Empty : "invisible")">
+                            <div class="pg-progress-bar">
+                                <div class="pg-progress-bar-value"></div>
                             </div>
-    
-                            <Xterm @ref="Terminal" Options="PlaygroundConstants.XTermOptions" OnFirstRender="@OnFirstRender"/>
                         </div>
-    
-                        <div class="row">
-                            <div class="container-fluid">
-                                <button type="button"
-                                        disabled="@Busy"
-                                        class="btn btn-outline-danger"
-                                        onclick="@(async () => await OnClick_StartMutationTests())">Run Mutation Tests</button>
-    
-                                <button type="button"
-                                        disabled="@Busy"
-                                        class="btn btn-outline-warning"
-                                        onclick="@(async () => await OnClick_StartUnitTests())">Run Unit Tests</button>
-    
-                                <button type="button"
-                                        hidden="@(_jsonReport == null)"
-                                        class="btn btn-outline-info"
-                                        onclick="@(() => { _displayReport = !_displayReport; })"> @(_displayReport ? "Edit code" : "View report")</button>
-                            </div>
+
+                        <Xterm @ref="Terminal" Options="PlaygroundConstants.XTermOptions" OnFirstRender="@OnFirstRender"/>
+                    </div>
+
+                    <div class="row">
+                        <div class="container-fluid">
+                            <button type="button"
+                                    disabled="@Busy"
+                                    class="btn btn-outline-danger"
+                                    onclick="@(async () => await OnClick_StartMutationTests())">Run Mutation Tests</button>
+
+                            <button type="button"
+                                    disabled="@Busy"
+                                    class="btn btn-outline-warning"
+                                    onclick="@(async () => await OnClick_StartUnitTests())">Run Unit Tests</button>
+
+                            <button type="button"
+                                    hidden="@(_jsonReport == null)"
+                                    class="btn btn-outline-info"
+                                    onclick="@(() => { _displayReport = !_displayReport; })"> @(_displayReport ? "Edit code" : "View report")</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </div>

@@ -62,6 +62,11 @@ html, body {
     width: 100%;
 }
 
+#stryker-report{
+    height: 100%;
+    width: 100%;
+}
+
 .page{
     height: 100%;
     display: flex;
