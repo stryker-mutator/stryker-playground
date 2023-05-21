@@ -192,33 +192,10 @@ public partial class Playground
         
         await Terminal.Error($"Compilation failed with {errorCount} errors and {warnCount} warnings");
 
-        var decorations = new List<ModelDeltaDecoration>();
-
         foreach (var diagnostic in diagnostics.Where(x => x.Severity == DiagnosticSeverity.Error))
         {
-            var span = diagnostic.Location.GetLineSpan();
-            var range = new BlazorMonaco.Range(
-                span.StartLinePosition.Line + 1,
-                span.StartLinePosition.Character + 1,
-                span.EndLinePosition.Line + 1,
-                span.EndLinePosition.Character + 1);
-
-            var decoration = new ModelDeltaDecoration()
-            {
-                Options = new ModelDecorationOptions()
-                {
-                    IsWholeLine = false,
-                    InlineClassName = "squiggly-line"
-                },
-                Range = range,
-            };
-
-            decorations.Add(decoration);
-
             await Terminal.Error(diagnostic.ToString());
         }
-
-        await SourceCodeEditor.DeltaDecorations(Array.Empty<string>(), decorations.ToArray());
     }
 
     private async Task<CompilationInput> GetInput()
@@ -228,7 +205,7 @@ public partial class Playground
             References = _references,
             SourceCode = await SourceCodeEditor.GetValue(),
             TestCode = await TestCodeEditor.GetValue(),
-            UsingStatementNamespaces = PlaygroundConstants.DefaultNamespaces,
+            UsingStatementNamespaces = CompilationInput.DefaultNamespaces,
         };
     }
 
@@ -244,11 +221,11 @@ public partial class Playground
     {
         await Terminal.WriteAndScroll("Loading dependencies, please wait..");
 
-        foreach (var lib in PlaygroundConstants.DefaultLibraries)
+        foreach (var lib in CompilationInput.DefaultLibraries)
         {
             try
             {
-                await LoadLibrary(lib);
+                await LoadLibrary(lib + ".dll");
             }
             catch (Exception e)
             {

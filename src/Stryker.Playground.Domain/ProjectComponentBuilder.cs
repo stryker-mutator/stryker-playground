@@ -5,7 +5,7 @@ using Stryker.Core.Common.ProjectComponents;
 
 namespace Stryker.Playground.Domain;
 
-public class ProjectComponentBuilder
+public static class ProjectComponentBuilder
 {
     public static IProjectComponent BuildProjectComponent(SyntaxTree originalSourceTree, IEnumerable<Mutant> mutants)
     {

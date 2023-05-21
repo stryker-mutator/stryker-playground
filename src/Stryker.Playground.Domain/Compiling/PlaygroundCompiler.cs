@@ -58,8 +58,8 @@ public class PlaygroundCompiler : IPlaygroundCompiler
                 optimizationLevel: OptimizationLevel.Release)
             .WithUsings(input.UsingStatementNamespaces);
 
-        var sourceCodeTree = SyntaxFactory.ParseSyntaxTree(input.SourceCode.Trim());
-        var unitTestTree = SyntaxFactory.ParseSyntaxTree(input.TestCode);
+        var sourceCodeTree = SyntaxFactory.ParseSyntaxTree(input.SourceCode.Trim(), path: "Program.cs");
+        var unitTestTree = SyntaxFactory.ParseSyntaxTree(input.TestCode, path: "Tests.cs");
         var injectionTrees = GetInstrumentationSyntaxTrees();
 
         var isoDateTime = DateTime.Now.ToString("yyyyMMddTHHmmss");

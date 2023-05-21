@@ -11,8 +11,9 @@ public class TestRunner : ITestRunner
     public async Task<TestRunResult> RunTests(byte[] assemblyBytes, int? activeMutantId = null, bool stopOnError = false)
     {
         // This method may run in a Web Worker and must be declared as async
-        // despite the fact that is contains no asynchronous code
+        // despite the fact that it contains no asynchronous code
         await Task.CompletedTask;
+        
         activeMutantId ??= -1;
         Environment.SetEnvironmentVariable("ActiveMutation", activeMutantId.ToString());
         
