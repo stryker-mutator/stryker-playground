@@ -106,17 +106,39 @@ public partial class Playground
 
         var mutatedCompilation = await _compiler.CompileWithMutations(input);
         var mutants = mutatedCompilation.Mutants.ToList();
-        var compileErrorCount = mutants.Count(x => x.ResultStatus == MutantStatus.CompileError);
+
+        if (mutants.Count == 0)
+        {
+            await Terminal.Error("Error: The supplied code does not contain any potential locations where mutations can be applied.\n" +
+                                 "Ensure that the code includes variables, expressions, or operations that are eligible for mutation.");
+            return;
+        }
+
+        // Perform mutation test dry run with no active mutants in order to capture mutant coverage information
+        var dryRunResults = await RunTests(mutatedCompilation, -1, true);
+        
+        if (dryRunResults.CoveredMutantIds is not null)
+        {
+            foreach (var mutant in mutants.Where(mutant => mutant.ResultStatus == MutantStatus.NotRun && !dryRunResults.CoveredMutantIds.Contains(mutant.Id)))
+            {
+                mutant.ResultStatus = MutantStatus.NoCoverage;
+            }
+        }
         
         await Terminal.WriteAndScroll($"Generated a total of {mutants.Count} mutants");
 
-        if (compileErrorCount > 0)
+        if (mutants.Any(x => x.ResultStatus == MutantStatus.CompileError))
         {
-            await Terminal.WriteAndScroll($"{compileErrorCount} mutants have status CompileError and will be skipped");
+            await Terminal.WriteAndScroll($"{mutants.Count(x => x.ResultStatus == MutantStatus.CompileError)} mutants have status CompileError and will be skipped");
         }
         
+        if (mutants.Any(x => x.ResultStatus == MutantStatus.NoCoverage))
+        {
+            await Terminal.WriteAndScroll($"{mutants.Count(x => x.ResultStatus == MutantStatus.NoCoverage)} mutants have status NoCoverage and will be skipped");
+        }
 
-        foreach (var mutant in mutatedCompilation.Mutants.Where(x => x.ResultStatus is not MutantStatus.CompileError or MutantStatus.NoCoverage))
+        foreach (var mutant in mutants.Where(x => x.ResultStatus != MutantStatus.CompileError && 
+                                                  x.ResultStatus != MutantStatus.NoCoverage))
         {
             await Terminal.Write($"Running tests for mutant {mutant.DisplayName}");
             var testResult = await RunTests(mutatedCompilation, mutant.Id, true);
@@ -128,13 +150,6 @@ public partial class Playground
                 TestRunStatus.PASSED => MutantStatus.Survived,
                 _ => MutantStatus.NotRun,
             };
-
-            if (mutant.ResultStatus != MutantStatus.Timeout && 
-                testResult.CoveredMutantIds is not null && 
-                !testResult.CoveredMutantIds.Contains(mutant.Id))
-            {
-                mutant.ResultStatus = MutantStatus.NoCoverage;
-            }
 
             await Terminal.WriteAndScroll($" ({mutant.ResultStatus.ToString()})");
         }

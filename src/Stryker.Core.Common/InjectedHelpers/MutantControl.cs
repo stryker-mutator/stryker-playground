@@ -15,6 +15,11 @@ namespace Stryker
 
         public static void RegisterMutationAsCovered(int id)
         {
+            if (id < 0) // valid mutant id must be a positive number
+            {
+                return;
+            }
+            
             string environmentVariable = Environment.GetEnvironmentVariable("CoveredMutations") ?? string.Empty;
             
             Environment.SetEnvironmentVariable("CoveredMutations", environmentVariable + "," + id);
