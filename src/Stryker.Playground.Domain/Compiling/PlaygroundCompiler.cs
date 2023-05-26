@@ -67,24 +67,32 @@ public class PlaygroundCompiler : IPlaygroundCompiler
             (rollbackProcessResult, emitResult, retryCount) = TryCompilation(ilStream, rollbackProcessResult?.Compilation ?? compilation, emitResult, retryCount == MaxAttempt - 1, retryCount);
         }
 
-        var rolledBackIds = rollbackProcessResult.RollbackedIds.ToList();
+        try
+        {
+            var rolledBackIds = rollbackProcessResult?.RollbackedIds?.ToList() ?? Enumerable.Empty<int>();
         
-        foreach (var mutant in orchestrator.Mutants)
-        {
-            if (rolledBackIds.Contains(mutant.Id))
+            foreach (var mutant in orchestrator.Mutants)
             {
-                mutant.ResultStatus = MutantStatus.CompileError;
+                if (rolledBackIds.Contains(mutant.Id))
+                {
+                    mutant.ResultStatus = MutantStatus.CompileError;
+                }
             }
-        }
 
-        return new MutantCompilationResult
+            return new MutantCompilationResult
+            {
+                OriginalTree = input.SourceCode,
+                Mutants = orchestrator.Mutants,
+                Diagnostics = emitResult.Diagnostics,
+                EmittedBytes = ilStream.ToArray(),
+                Success = emitResult.Success,
+            };
+        }
+        catch (Exception e)
         {
-            OriginalTree = input.SourceCode,
-            Mutants = orchestrator.Mutants,
-            Diagnostics = emitResult.Diagnostics,
-            EmittedBytes = ilStream.ToArray(),
-            Success = emitResult.Success,
-        };
+            Console.WriteLine(e);
+            throw;
+        }
     }
     
     public async Task<CompilationResult> Compile(CompilationInput input)

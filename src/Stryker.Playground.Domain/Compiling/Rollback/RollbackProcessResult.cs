@@ -9,6 +9,6 @@ namespace Stryker.Playground.Domain.Compiling.Rollback
     public class RollbackProcessResult
     {
         public CSharpCompilation Compilation { get; set; }
-        public IEnumerable<int> RollbackedIds { get; set; }
+        public IEnumerable<int> RollbackedIds { get; set; } = Enumerable.Empty<int>();
     }
 }
