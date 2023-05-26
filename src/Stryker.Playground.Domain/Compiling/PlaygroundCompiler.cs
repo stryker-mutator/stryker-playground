@@ -128,7 +128,6 @@ public class PlaygroundCompiler : IPlaygroundCompiler
         {
             // remove broken mutations
             rollbackProcessResult = _rollbackProcess.Start(compilation, previousEmitResult.Diagnostics, lastAttempt, false);
-            compilation = rollbackProcessResult.Compilation;
         }
 
         // reset the memoryStream
