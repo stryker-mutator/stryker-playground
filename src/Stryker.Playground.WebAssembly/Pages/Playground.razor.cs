@@ -108,11 +108,11 @@ public partial class Playground
         var mutants = mutatedCompilation.Mutants.ToList();
         var compileErrorCount = mutants.Count(x => x.ResultStatus == MutantStatus.CompileError);
         
-        await Terminal.WriteAndScroll($"Generated {mutants.Count} valid mutants");
+        await Terminal.WriteAndScroll($"Generated a total of {mutants.Count} mutants");
 
         if (compileErrorCount > 0)
         {
-            await Terminal.WriteAndScroll($"{compileErrorCount} mutants have status CompileError mutants");
+            await Terminal.WriteAndScroll($"{compileErrorCount} mutants have status CompileError and will be skipped");
         }
         
 
