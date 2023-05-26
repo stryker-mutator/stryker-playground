@@ -49,7 +49,7 @@ public class RollbackProcess : IRollbackProcess
             }
             else
             {
-                Console.WriteLine($"RollBacking mutations from {originalTree.FilePath}.");
+                Console.WriteLine($"RollBacking mutations from in-memory path");
             }
 
             Console.WriteLine($"source {originalTree}");

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
@@ -33,10 +34,19 @@ public class PlaygroundCompiler : IPlaygroundCompiler
 
         var mutatedTree = orchestrator.Mutate(sourceCodeRoot);
 
+        var mutatedInput = new CompilationInput()
+        {
+            References = input.References,
+            TestCode = input.TestCode,
+            UsingStatementNamespaces = input.UsingStatementNamespaces,
+            SourceCode = await mutatedTree.SyntaxTree.GetRootAsync(),
+        };
+        
         Console.WriteLine($"Mutated the syntax tree with {orchestrator.MutantCount} mutations:");
         Console.WriteLine(mutatedTree.ToFullString());
         
-        var compilation = GetCompilation(input);
+        var compilation = GetCompilation(mutatedInput);
+        
         using var ilStream = new MemoryStream();
 
         // first try compiling
@@ -57,12 +67,20 @@ public class PlaygroundCompiler : IPlaygroundCompiler
             (rollbackProcessResult, emitResult, retryCount) = TryCompilation(ilStream, rollbackProcessResult?.Compilation ?? compilation, emitResult, retryCount == MaxAttempt - 1, retryCount);
         }
 
-        var rolledBackIds = rollbackProcessResult?.RollbackedIds ?? new List<int>();
+        var rolledBackIds = rollbackProcessResult.RollbackedIds.ToList();
+        
+        foreach (var mutant in orchestrator.Mutants)
+        {
+            if (rolledBackIds.Contains(mutant.Id))
+            {
+                mutant.ResultStatus = MutantStatus.CompileError;
+            }
+        }
 
         return new MutantCompilationResult
         {
             OriginalTree = input.SourceCode,
-            Mutants = orchestrator.Mutants.Where(x => !rolledBackIds.Contains(x.Id)).ToList(),
+            Mutants = orchestrator.Mutants,
             Diagnostics = emitResult.Diagnostics,
             EmittedBytes = ilStream.ToArray(),
             Success = emitResult.Success,
@@ -128,6 +146,7 @@ public class PlaygroundCompiler : IPlaygroundCompiler
         {
             // remove broken mutations
             rollbackProcessResult = _rollbackProcess.Start(compilation, previousEmitResult.Diagnostics, lastAttempt, false);
+            compilation = rollbackProcessResult.Compilation;
         }
 
         // reset the memoryStream

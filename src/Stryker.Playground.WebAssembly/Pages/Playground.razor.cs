@@ -106,10 +106,17 @@ public partial class Playground
 
         var mutatedCompilation = await _compiler.CompileWithMutations(input);
         var mutants = mutatedCompilation.Mutants.ToList();
+        var compileErrorCount = mutants.Count(x => x.ResultStatus == MutantStatus.CompileError);
         
-        await Terminal.WriteAndScroll($"Generated {mutants.Count} mutants");
+        await Terminal.WriteAndScroll($"Generated {mutants.Count} valid mutants");
 
-        foreach (var mutant in mutatedCompilation.Mutants)
+        if (compileErrorCount > 0)
+        {
+            await Terminal.WriteAndScroll($"{compileErrorCount} mutants have status CompileError mutants");
+        }
+        
+
+        foreach (var mutant in mutatedCompilation.Mutants.Where(x => x.ResultStatus is not MutantStatus.CompileError or MutantStatus.NoCoverage))
         {
             await Terminal.Write($"Running tests for mutant {mutant.DisplayName}");
             var testResult = await RunTests(mutatedCompilation, mutant.Id, true);
