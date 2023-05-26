@@ -129,6 +129,11 @@ public partial class Playground
                 _ => MutantStatus.NotRun,
             };
 
+            if (!testResult.CoveredMutantIds.Contains(mutant.Id))
+            {
+                mutant.ResultStatus = MutantStatus.NoCoverage;
+            }
+
             await Terminal.WriteAndScroll($" ({mutant.ResultStatus.ToString()})");
         }
         

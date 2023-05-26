@@ -10,7 +10,7 @@ namespace Stryker.Playground.Domain.Tests;
 
 public class TestRunnerTest
 {
-    private static string GenerateTestClass(int testCount = 1, TestRunStatus status = TestRunStatus.PASSED)
+    private static string GenerateTestClass(int testCount, TestRunStatus status)
     {
         var sb = new StringBuilder(@"using NUnit.Framework;
 namespace Tests 
