@@ -67,7 +67,8 @@ public class PlaygroundCompiler : IPlaygroundCompiler
             (rollbackProcessResult, emitResult, retryCount) = TryCompilation(ilStream, rollbackProcessResult?.Compilation ?? compilation, emitResult, retryCount == MaxAttempt - 1, retryCount);
         }
 
-        var rolledBackIds = rollbackProcessResult.RollbackedIds.ToList();
+
+        var rolledBackIds = rollbackProcessResult?.RollbackedIds?.ToList() ?? new List<int>();
         
         foreach (var mutant in orchestrator.Mutants)
         {
