@@ -129,7 +129,9 @@ public partial class Playground
                 _ => MutantStatus.NotRun,
             };
 
-            if (!testResult.CoveredMutantIds.Contains(mutant.Id))
+            if (mutant.ResultStatus != MutantStatus.Timeout && 
+                testResult.CoveredMutantIds is not null && 
+                !testResult.CoveredMutantIds.Contains(mutant.Id))
             {
                 mutant.ResultStatus = MutantStatus.NoCoverage;
             }
