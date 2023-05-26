@@ -11,14 +11,7 @@ jobs:
     unit-test:
         runs-on: ubuntu-latest
         steps:
-            - name: Print working dir
-              run: pwd
-
-            - name: Print dir content
-              run: ls
-
-            - name: Print target dir content
-              run: ls src/Stryker.Playground.Domain.Tests/
+            - uses: actions/checkout@v2
 
             - name: Execute Unit Tests
               run: dotnet test src/Stryker.Playground.Domain.Tests/Stryker.Playground.Domain.Tests.csproj
@@ -26,6 +19,8 @@ jobs:
     e2e-test:
       runs-on: ubuntu-latest
       steps:
+          - uses: actions/checkout@v2
+
           - name: Install DotnetBackground tool
             run: dotnet tool install --global DotnetBackground
 
