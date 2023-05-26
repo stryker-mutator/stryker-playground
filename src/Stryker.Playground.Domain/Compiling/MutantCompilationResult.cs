@@ -6,5 +6,5 @@ namespace Stryker.Playground.Domain.Compiling;
 public class MutantCompilationResult : CompilationResult
 {
     public IEnumerable<Mutant> Mutants { get; set; }
-    public SyntaxTree OriginalTree { get; set; }
+    public SyntaxNode OriginalTree { get; set; }
 }
