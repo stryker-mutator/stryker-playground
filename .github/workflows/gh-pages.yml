@@ -1,4 +1,4 @@
-name: Deploy Blazor WASM to GitHub Pages
+name: Test & Deploy
 
 permissions:
   contents: write
@@ -11,6 +11,9 @@ jobs:
     unit-test:
         runs-on: ubuntu-latest
         steps:
+            - name: Print working dir
+              run: pwd
+
             - name: Execute Unit Tests
               run: dotnet test src/Stryker.Playground.Domain.Tests/Stryker.Playground.Domain.Tests.csproj
 
