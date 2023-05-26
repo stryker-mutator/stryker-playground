@@ -22,10 +22,10 @@ jobs:
           - uses: actions/checkout@v2
 
           - name: Build E2E project
-            run: dotnet build src/Stryker.Playground.WebAssembly/Stryker.Playground.WebAssembly.csproj
+            run: dotnet build src/Stryker.Playground.WebAssembly.Tests/Stryker.Playground.WebAssembly.Tests.csproj
 
           - name: Install Playwright
-            run: ./src/Stryker.Playground.WebAssembly.Tests/bin/Debug/net7.0/playwright.ps1 install
+            run: powershell src/Stryker.Playground.WebAssembly.Tests/bin/Debug/net7.0/playwright.ps1 install
 
           - name: Install DotnetBackground tool
             run: dotnet tool install --global DotnetBackground
