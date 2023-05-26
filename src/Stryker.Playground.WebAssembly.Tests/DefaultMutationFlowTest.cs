@@ -11,7 +11,7 @@ public class DefaultMutationFlowTest
         var browser = await playwright.Chromium.LaunchAsync();
         var page = await browser.NewPageAsync();
         
-        await page.GotoAsync("https://localhost:7165/");
+        await page.GotoAsync("http://localhost:5000/");
         
         // Wait for playground to initialize
         await page.WaitForSelectorAsync("button:has-text(\"Run Mutation Tests\"):not([disabled])");
@@ -20,7 +20,7 @@ public class DefaultMutationFlowTest
         await page.ClickAsync("button:has-text(\"Run Mutation Tests\")");
 
         // Wait for tests to finish & report to display. Then navigate back to editor screen
-        await page.WaitForSelectorAsync("button:has-text(\"Mutation Report\").active");
+        await page.WaitForSelectorAsync("button:has-text(\"Mutation Report\").active", new PageWaitForSelectorOptions() { Timeout = 60_000 * 5});
         await page.ClickAsync("button:has-text(\"Editor\")");
 
         // Validate terminal output
