@@ -1,6 +1,7 @@
 using BlazorMonaco.Editor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.JSInterop;
 using SpawnDev.BlazorJS.WebWorkers;
 using Stryker.Core.Common.Mutants;
@@ -105,10 +106,17 @@ public partial class Playground
 
         var mutatedCompilation = await _compiler.CompileWithMutations(input);
         var mutants = mutatedCompilation.Mutants.ToList();
+        var compileErrorCount = mutants.Count(x => x.ResultStatus == MutantStatus.CompileError);
         
-        await Terminal.WriteAndScroll($"Generated {mutants.Count} mutants");
+        await Terminal.WriteAndScroll($"Generated {mutants.Count} valid mutants");
 
-        foreach (var mutant in mutatedCompilation.Mutants)
+        if (compileErrorCount > 0)
+        {
+            await Terminal.WriteAndScroll($"{compileErrorCount} mutants have status CompileError mutants");
+        }
+        
+
+        foreach (var mutant in mutatedCompilation.Mutants.Where(x => x.ResultStatus is not MutantStatus.CompileError or MutantStatus.NoCoverage))
         {
             await Terminal.Write($"Running tests for mutant {mutant.DisplayName}");
             var testResult = await RunTests(mutatedCompilation, mutant.Id, true);
@@ -128,7 +136,7 @@ public partial class Playground
 
         await Terminal.DisplayMutationScore(mutationScore);
 
-        var projectComponent = ProjectComponentBuilder.BuildProjectComponent(mutatedCompilation.OriginalTree, mutants);
+        var projectComponent = ProjectComponentBuilder.BuildProjectComponent(mutatedCompilation.OriginalTree.SyntaxTree, mutants);
 
         _jsonReport = JsonReport.Build(new StrykerOptions(), projectComponent);
 
@@ -162,13 +170,14 @@ public partial class Playground
 
     private async Task<TestRunResult> RunTests(CompilationResult compilation, int? activeMutantId = null, bool stopOnError = false)
     {
+        var assemblyBytes = compilation.EmittedBytes ?? throw new ApplicationException("Unable to start test run: EmittedBytes is null!");
         var worker = await WebWorkerService.GetWebWorker() ?? throw new ApplicationException("Unable to start web worker");
         var testWorker = worker.GetService<ITestRunner>();
-
+        
         try
         {
             return await testWorker
-                .RunTests(compilation.EmittedBytes!, activeMutantId, stopOnError)
+                .RunTests(assemblyBytes, activeMutantId, stopOnError)
                 .WaitAsync(PlaygroundConstants.TestSuiteMaxDuration);
         }
         catch (TimeoutException)
@@ -203,8 +212,8 @@ public partial class Playground
         return new CompilationInput
         {
             References = _references,
-            SourceCode = await SourceCodeEditor.GetValue(),
-            TestCode = await TestCodeEditor.GetValue(),
+            SourceCode = await SyntaxFactory.ParseSyntaxTree(await SourceCodeEditor.GetValue()).GetRootAsync(),
+            TestCode = await SyntaxFactory.ParseSyntaxTree(await TestCodeEditor.GetValue()).GetRootAsync(),
             UsingStatementNamespaces = CompilationInput.DefaultNamespaces,
         };
     }

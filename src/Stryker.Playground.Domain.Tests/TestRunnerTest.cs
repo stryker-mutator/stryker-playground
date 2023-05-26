@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Shouldly;
 using Stryker.Playground.Domain.Compiling;
 using Stryker.Playground.Domain.TestRunners;
@@ -54,8 +55,8 @@ namespace Tests
         var input = new CompilationInput()
         {
             References = references,
-            SourceCode = string.Empty,
-            TestCode = testCode,
+            SourceCode = await SyntaxFactory.ParseSyntaxTree(string.Empty).GetRootAsync(),
+            TestCode = await SyntaxFactory.ParseSyntaxTree(testCode).GetRootAsync(),
             UsingStatementNamespaces = CompilationInput.DefaultNamespaces,
         };
 

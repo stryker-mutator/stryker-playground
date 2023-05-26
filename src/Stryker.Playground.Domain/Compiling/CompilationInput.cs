@@ -8,9 +8,9 @@ public class CompilationInput
     
     public IEnumerable<string> UsingStatementNamespaces { get; set; }
 
-    public string SourceCode { get; set; }
+    public SyntaxNode SourceCode { get; set; }
 
-    public string TestCode { get; set; }
+    public SyntaxNode TestCode { get; set; }
 
     public static string[] DefaultLibraries =
     {
