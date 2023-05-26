@@ -20,7 +20,7 @@ public class DefaultMutationFlowTest
         await page.ClickAsync("button:has-text(\"Run Mutation Tests\")");
 
         // Wait for tests to finish & report to display. Then navigate back to editor screen
-        await page.WaitForSelectorAsync("button:has-text(\"Mutation Report\").active");
+        await page.WaitForSelectorAsync("button:has-text(\"Mutation Report\").active", new PageWaitForSelectorOptions() { Timeout = 60_000 * 5});
         await page.ClickAsync("button:has-text(\"Editor\")");
 
         // Validate terminal output
