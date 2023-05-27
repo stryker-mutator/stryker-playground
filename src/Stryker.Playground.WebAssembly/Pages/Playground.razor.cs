@@ -281,6 +281,13 @@ public partial class Playground
         await TestCodeEditor.Layout();
     }
 
+    private async Task OnClick_EditorButton()
+    {
+        _displayReport = false;
+        await Task.Delay(200);
+        await OnBrowserResize();
+    }
+
     private async Task OnBrowserResize()
     {
         Console.WriteLine("Adjusting editor sizes!");

@@ -5,22 +5,37 @@
     <div class="h-100 col-12">
         
         <div class="row">
-            <div class="col">
+            <section class="container">
+
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <button class="nav-link @(DisplayReport ? "text-warning" : "active")" 
-                           onclick="@(() => { _displayReport = false; })"
-                           aria-current="page" href="#">Editor</button>
+                        <button class="nav-link @(DisplayReport ? "text-warning" : "active")"
+                                onclick="@(async () => { await OnClick_EditorButton(); })"
+                                aria-current="page" href="#">Editor</button>
                     </li>
                     <li class="nav-item @(_jsonReport is null ? "not-allowed" : string.Empty)">
-                        <button 
-                            class="nav-link @(DisplayReport ? "active" : "text-warning") @(_jsonReport is null ? "disabled" : string.Empty)" 
-                            href="#" tabindex="-1" 
+                        <button
+                            class="nav-link @(DisplayReport ? "active" : "text-warning") @(_jsonReport is null ? "disabled" : string.Empty)"
+                            href="#" tabindex="-1"
                             onclick="@(() => { _displayReport = true; })"
                             aria-disabled="@(_jsonReport is null)">Mutation Report</button>
                     </li>
                 </ul>
-            </div>
+                
+                <div>
+                    <button type="button"
+                            id="unit-test-btn"
+                            disabled="@Busy"
+                            class="btn btn-outline-success"
+                            onclick="@(async () => await OnClick_StartUnitTests())">🧪 Run Unit Tests</button>
+
+                    <button type="button"
+                            id="stryker-btn"
+                            disabled="@Busy"
+                            class="btn btn-outline-danger text-warning"
+                            onclick="@(async () => await OnClick_StartMutationTests())">👽 <strong>Run Stryker</strong></button>
+                </div>
+            </section>
         </div>
 
         <div class="row" style="height:90%" hidden="@(!DisplayReport)">
@@ -35,7 +50,7 @@
                                         <script defer src='https://www.unpkg.com/mutation-testing-elements'></script>
                                     </head>
                                     <body>
-                                    <mutation-test-report-app title-postfix='Stryker Playground Report'>
+                                    <mutation-test-report-app theme='dark' title-postfix='Stryker Playground Report'>
                                         Your browser doesn't support <a href='https://caniuse.com/#search=custom%20elements'>custom elements</a>.
                                         Please use a latest version of an evergreen browser (Firefox, Chrome, Safari, Opera, etc).
                                     </mutation-test-report-app>
@@ -78,34 +93,14 @@
             </div>
         </div>
 
-        <div id="playground-controls" class="row" hidden="@DisplayReport">
-            <div class="col-12">
-                
-                <div class="row">
-                
-                    <div class="container @(Busy && Initialized ? string.Empty : "invisible")">
-                        <div class="pg-progress-bar">
-                            <div class="pg-progress-bar-value"></div>
-                        </div>
-                    </div>
-                
-                    <Xterm @ref="Terminal" Options="PlaygroundConstants.XTermOptions" OnFirstRender="@OnFirstRender"/>
-                </div>
-
-                <div class="row">
-                    <div class="container-fluid">
-                        <button type="button"
-                                disabled="@Busy"
-                                class="btn btn-outline-danger"
-                                onclick="@(async () => await OnClick_StartMutationTests())">Run Mutation Tests</button>
-                
-                        <button type="button"
-                                disabled="@Busy"
-                                class="btn btn-outline-warning"
-                                onclick="@(async () => await OnClick_StartUnitTests())">Run Unit Tests</button>
-                    </div>
+        <div id="playground-terminal" class="fixed-bottom row" hidden="@DisplayReport">
+            <div class="container @(Busy && Initialized ? string.Empty : "invisible")">
+                <div class="pg-progress-bar">
+                    <div class="pg-progress-bar-value"></div>
                 </div>
             </div>
+
+            <Xterm @ref="Terminal" Options="PlaygroundConstants.XTermOptions" OnFirstRender="@OnFirstRender"/>
         </div>
     </div>
 </div>
