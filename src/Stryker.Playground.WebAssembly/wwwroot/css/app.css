@@ -62,6 +62,12 @@ html, body {
     width: 100%;
 }
 
+@media screen and (max-width: 992px) {
+    .playground-editor {
+        height: 35vh; /* Different height for screens below 992 pixels */
+    }
+}
+
 #stryker-report{
     height: 100%;
     width: 100%;
