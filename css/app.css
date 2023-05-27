@@ -51,14 +51,14 @@ html, body {
 }
 
 .main {
-    background-color: #1b1b1d;
+    background-color: #18181b;
     flex: 1;
     height: 100%;
     box-sizing: border-box;
 }
 
 .playground-editor {
-    height: 60vh !important;
+    height: 70vh;
     width: 100%;
 }
 
@@ -84,6 +84,12 @@ html, body {
 
 .nav-tabs {
     border-bottom: 2px solid #282828;
+}
+
+section.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .xterm .xterm-viewport{
