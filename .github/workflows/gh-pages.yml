@@ -32,6 +32,11 @@ jobs:
 
           - name: Run Stryker Playground in the background
             run: DotnetBackground run --project src/Stryker.Playground.WebAssembly/Stryker.Playground.WebAssembly.csproj --profile "https"
+            
+          - name: Wait for Stryker Playground Kestrel webserver to respond
+            uses: iFaxity/wait-on-action
+            with:
+              resource: http://localhost:5000
     
           - name: Execute E2E Tests
             run: dotnet test src/Stryker.Playground.WebAssembly.Tests/Stryker.Playground.WebAssembly.Tests.csproj
