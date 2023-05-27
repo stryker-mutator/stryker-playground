@@ -55,10 +55,6 @@ public class PlaygroundConstants
     
     public static string UnitTestClassExample = @"namespace Playground.Tests;
 
-using Playground.Source;
-using NUnit.Framework;
-using Shouldly;
-
 public class CalculatorTests
 {
     private readonly Calculator _calculator = new();

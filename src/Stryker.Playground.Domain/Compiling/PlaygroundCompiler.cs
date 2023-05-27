@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
@@ -38,7 +37,6 @@ public class PlaygroundCompiler : IPlaygroundCompiler
         {
             References = input.References,
             TestCode = input.TestCode,
-            UsingStatementNamespaces = input.UsingStatementNamespaces,
             SourceCode = await mutatedTree.SyntaxTree.GetRootAsync(),
         };
         
@@ -90,21 +88,7 @@ public class PlaygroundCompiler : IPlaygroundCompiler
     
     public async Task<CompilationResult> Compile(CompilationInput input)
     {
-        var compilationOptions = new CSharpCompilationOptions(
-                OutputKind.DynamicallyLinkedLibrary, 
-                concurrentBuild: false, // WASM does not support concurrent builds
-                optimizationLevel: OptimizationLevel.Release)
-            .WithUsings(input.UsingStatementNamespaces);
-        
-        var injectionTrees = GetInstrumentationSyntaxTrees();
-
-        var isoDateTime = DateTime.Now.ToString("yyyyMMddTHHmmss");
-        var compilation = CSharpCompilation.Create($"PlaygroundBuild-{isoDateTime}.dll")
-            .WithOptions(compilationOptions)
-            .WithReferences(input.References)
-            .AddSyntaxTrees(input.SourceCode.SyntaxTree, input.TestCode.SyntaxTree)
-            .AddSyntaxTrees(injectionTrees);
-
+        var compilation = GetCompilation(input);
         await using var codeStream = new MemoryStream();
         
         var result = compilation.Emit(codeStream);
@@ -117,20 +101,19 @@ public class PlaygroundCompiler : IPlaygroundCompiler
         };
     }
 
-    public CSharpCompilation GetCompilation(CompilationInput input)
+    private static CSharpCompilation GetCompilation(CompilationInput input)
     {
         var compilationOptions = new CSharpCompilationOptions(
-                OutputKind.DynamicallyLinkedLibrary,
-                concurrentBuild: false, // WASM does not support concurrent builds
-                optimizationLevel: OptimizationLevel.Release)
-            .WithUsings(input.UsingStatementNamespaces);
+            OutputKind.DynamicallyLinkedLibrary,
+            concurrentBuild: false, // WASM does not support concurrent builds
+            optimizationLevel: OptimizationLevel.Release);
         
         var isoDateTime = DateTime.Now.ToString("yyyyMMddTHHmmss");
-        
-        return CSharpCompilation.Create($"PlaygroundBuild-{isoDateTime}.dll")
+
+        return CSharpCompilation.Create($"PlaygroundBuild-{isoDateTime}")
             .WithOptions(compilationOptions)
             .WithReferences(input.References)
-            .AddSyntaxTrees(input.SourceCode.SyntaxTree, input.TestCode.SyntaxTree)
+            .AddSyntaxTrees(input.SourceCode.SyntaxTree, input.TestCode.SyntaxTree, GetGlobalUsingsSyntaxTree(input.GlobalUsingDirectives))
             .AddSyntaxTrees(GetInstrumentationSyntaxTrees());
     }
 
@@ -175,6 +158,13 @@ public class PlaygroundCompiler : IPlaygroundCompiler
         {
             Console.WriteLine("Compilation successful");
         }
+    }
+    
+    private static SyntaxTree GetGlobalUsingsSyntaxTree(string[] namespaces)
+    {
+        var fileContent = string.Join("\n", namespaces.Select(ns => $"global using {ns};"));
+
+        return SyntaxFactory.ParseSyntaxTree(fileContent);
     }
     
     private static List<SyntaxTree> GetInstrumentationSyntaxTrees()

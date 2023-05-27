@@ -236,7 +236,6 @@ public partial class Playground
             References = _references,
             SourceCode = await SyntaxFactory.ParseSyntaxTree(await SourceCodeEditor.GetValue()).GetRootAsync(),
             TestCode = await SyntaxFactory.ParseSyntaxTree(await TestCodeEditor.GetValue()).GetRootAsync(),
-            UsingStatementNamespaces = CompilationInput.DefaultNamespaces,
         };
     }
 
