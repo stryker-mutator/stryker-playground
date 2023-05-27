@@ -53,49 +53,59 @@ public class PlaygroundConstants
     
     public static TimeSpan TestSuiteMaxDuration = TimeSpan.FromSeconds(5);
     
-    public static string UnitTestClassExample = @"using Playground.Example.Source;
+    public static string UnitTestClassExample = @"namespace Playground.Tests;
+
+using Playground.Source;
 using NUnit.Framework;
+using Shouldly;
 
-namespace Playground.Example.Tests 
+public class CalculatorTests
 {
-    [TestFixture]
-    public class RoboBarTests
+    private readonly Calculator _calculator = new();
+
+    [TestCase(100, 0, 100)]
+    public void Addition_Returns_ExpectedResult(int a, int b, int expectedResult)
     {
-        [Test]
-        public void GetGreetings_WhenCustomerIs18Plus_GetsBeer()
-        {
-            var bar = new RoboBar();
-            var response = bar.GetGreeting(19);
+        var result = _calculator.Add(a, b);
 
-            Assert.That(response, Is.EqualTo(""Here have a beer!""));
-        }
+        result.ShouldBe(expectedResult);
+    }
+    
+    [TestCase(30, 0, 30)]
+    public void Subtraction_Returns_ExpectedResult(int a, int b, int expectedResult)
+    {
+        var result = _calculator.Subtract(a, b);
 
-        [Test]
-        public void GetGreetings_WhenCustomerIsUnderage_GetsDenied()
-        {
-            var bar = new RoboBar();
-            var response = bar.GetGreeting(17);
+        result.ShouldBe(expectedResult);
+    }
+    
+    [TestCase(0, 1, 0)]
+    [TestCase(1, 1, 1)]
+    public void Multiply_Returns_ExpectedResult(int a, int b, int expectedResult)
+    {
+        var result = _calculator.Multiply(a, b);
 
-            Assert.That(response, Is.EqualTo(""Sorry not today!""));
-        }
+        result.ShouldBe(expectedResult);
     }
 }";
     
-    public static string SourceCodeExample = @"using System;
+    public static string SourceCodeExample = @"namespace Playground.Source;
 
-namespace Playground.Example.Source 
+public class Calculator
 {
-    public class RoboBar
+    public int Add(int a, int b)
     {
-        public string GetGreeting(int age)
-        {
-            if(age >= 18)
-            {
-                return ""Here have a beer!"";
-            }
-
-            return ""Sorry not today!"";
-        }
+        return a + b;
+    }
+    
+    public int Subtract(int a, int b)
+    {
+        return a - b;
+    }
+    
+    public int Multiply(int a, int b)
+    {
+        return a * b;
     }
 }";
 

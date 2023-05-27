@@ -28,6 +28,7 @@ public class CompilationInput
         "netstandard",
         
         // 3rd party dependencies
+        "Shouldly",
         "nunit.framework",
     };
 
