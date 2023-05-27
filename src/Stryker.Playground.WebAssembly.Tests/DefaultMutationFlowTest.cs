@@ -11,7 +11,7 @@ public class DefaultMutationFlowTest
         var browser = await playwright.Chromium.LaunchAsync();
         var page = await browser.NewPageAsync();
         
-        await page.GotoAsync("http://localhost:5000/");
+        await page.GotoAsync("http://localhost:5000/", new PageGotoOptions() { Timeout = 0 });
         
         // Wait for playground to initialize
         await page.WaitForSelectorAsync("button:has-text(\"Run Stryker\"):not([disabled])");
