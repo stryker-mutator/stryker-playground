@@ -21,22 +21,20 @@ jobs:
       steps:
           - uses: actions/checkout@v2
 
-          - name: Build E2E project
-            run: dotnet build src/Stryker.Playground.WebAssembly.Tests/Stryker.Playground.WebAssembly.Tests.csproj
-
-          - name: Install Playwright
-            run: pwsh src/Stryker.Playground.WebAssembly.Tests/bin/Debug/net7.0/playwright.ps1 install
+          - name: Build Playground web project
+            run: dotnet build src/Stryker.Playground.WebAssembly/Stryker.Playground.WebAssembly.csproj
 
           - name: Install DotnetBackground tool
             run: dotnet tool install --global DotnetBackground
 
           - name: Run Stryker Playground in the background
             run: DotnetBackground run --project src/Stryker.Playground.WebAssembly/Stryker.Playground.WebAssembly.csproj --profile "https"
-            
-          - name: Wait for Stryker Playground Kestrel webserver to respond
-            uses: iFaxity/wait-on-action
-            with:
-              resource: http://localhost:5000
+
+          - name: Build E2E project
+            run: dotnet build src/Stryker.Playground.WebAssembly.Tests/Stryker.Playground.WebAssembly.Tests.csproj
+
+          - name: Install Playwright
+            run: pwsh src/Stryker.Playground.WebAssembly.Tests/bin/Debug/net7.0/playwright.ps1 install
     
           - name: Execute E2E Tests
             run: dotnet test src/Stryker.Playground.WebAssembly.Tests/Stryker.Playground.WebAssembly.Tests.csproj
