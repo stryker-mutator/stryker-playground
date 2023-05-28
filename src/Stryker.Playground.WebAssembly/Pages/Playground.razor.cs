@@ -153,8 +153,12 @@ public partial class Playground
 
             await Terminal.WriteAndScroll($" ({mutant.ResultStatus.ToString()})");
         }
+
+        var detectedCount = mutants.Count(m => m.ResultStatus is MutantStatus.Killed or MutantStatus.Timeout);
+        var undetectedCount = mutants.Count(m => m.ResultStatus is MutantStatus.Survived or MutantStatus.NoCoverage);
+        var totalCount = detectedCount + undetectedCount;
         
-        var mutationScore = ((double)mutatedCompilation.Mutants.Count(x => x.ResultStatus != MutantStatus.Survived) / mutants.Count) * 100;
+        var mutationScore = ((double)detectedCount / totalCount) * 100;
 
         await Terminal.DisplayMutationScore(mutationScore);
 
