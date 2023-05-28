@@ -9,16 +9,18 @@ public class PlaygroundConstants
     public static string[] WelcomeMessageLines = 
     {
         "This is an interactive demo of Stryker.NET, the mutation testing framework for .NET!",
+        "Some technical limitations apply as this runs entirely in your browser using WebAssembly.",
+        $"For the full experience, install Stryker using {Bold("dotnet tool install -g dotnet-stryker")}",
         "",
         "Mutation testing is a technique for identifying weaknesses in your test suite by injecting bugs (mutations)",
         "into your source code and seeing if your tests can catch them.",
-        "This results in a mutation score, which is the percentage of mutations that are killed by your tests.",
-        "Code coverage only measures how much of your code is executed by your tests,",
-        "whereas mutation score tells how good your tests are at detecting faults in your code.",
+        "The result is a mutation score, which is the percentage of mutations that are 'killed' by your tests.",
+        "This goes beyond code coverage, because it evaluates how effective your tests are at detecting faults in your code.",
         "",
-        $"To get started, run the mutation tests by clicking on {Yellow(Bold("Run Stryker"))} in the top right corner",
-        "Afterwards, you can view the mutation report and inspect the different types of mutations that were generated.",
-        "Try enhancing the tests and see if you can improve your mutation score!"
+        $"To get started, run the mutation tests by clicking on '{Yellow(Bold("Run Stryker"))}' in the top right corner",
+        "Once executed, explore the generated mutation report to inspect the different types of mutations introduced.",
+        "",
+        "Try improving the mutation score by adding or editing test cases!",
     };
 
     
@@ -49,7 +51,7 @@ public class PlaygroundConstants
             Background = "#000000",
         },
         Columns = 160,
-        Rows = 12,
+        Rows = 14,
     };
     
     public static TimeSpan TestSuiteMaxDuration = TimeSpan.FromSeconds(5);
