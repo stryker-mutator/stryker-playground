@@ -142,7 +142,7 @@ public partial class Playground
         foreach (var mutant in mutants.Where(x => x.ResultStatus != MutantStatus.CompileError && 
                                                   x.ResultStatus != MutantStatus.NoCoverage))
         {
-            await Terminal.Write($"Running tests for mutant {mutant.DisplayName}");
+            await Terminal.Write($"Testing mutant {"#" + mutant.DisplayName,-32}");
             var testResult = await RunTests(mutatedCompilation, mutant.Id, true);
 
             mutant.ResultStatus = testResult.Status switch
@@ -153,7 +153,18 @@ public partial class Playground
                 _ => MutantStatus.NotRun,
             };
 
-            await Terminal.WriteAndScroll($" ({mutant.ResultStatus.ToString()})");
+            var statusIcon = mutant.ResultStatus switch
+            {
+                MutantStatus.Killed => $"✅",
+                MutantStatus.Survived => "👽",
+                MutantStatus.Timeout => "⏳",
+                MutantStatus.NoCoverage => "🙈",
+                MutantStatus.Ignored => "🤥",
+                MutantStatus.CompileError => "💥",
+                _ => "❔",
+            };
+
+            await Terminal.WriteAndScroll($" {statusIcon}  {mutant.ResultStatus.ToString()}");
         }
 
         var detectedCount = mutants.Count(m => m.ResultStatus is MutantStatus.Killed or MutantStatus.Timeout);
