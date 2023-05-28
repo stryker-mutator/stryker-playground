@@ -1,3 +1,4 @@
+using System.Net.Http.Json;
 using BlazorMonaco.Editor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.CodeAnalysis;
@@ -10,6 +11,7 @@ using Stryker.Core.Common.Reporters.Json;
 using Stryker.Playground.Domain;
 using Stryker.Playground.Domain.Compiling;
 using Stryker.Playground.Domain.TestRunners;
+using Stryker.Playground.WebAssembly.Github;
 using Stryker.Playground.WebAssembly.Services;
 using XtermBlazor;
 
@@ -250,6 +252,17 @@ public partial class Playground
 
         await base.OnInitializedAsync();
     }
+    
+    private async Task<GistData?> GetGistData(string gistId)
+    {
+        var response = await HttpClient.GetAsync($"https://api.github.com/gists/{gistId}");
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<GistData>();
+        }
+
+        return null;
+    }
 
     private async Task OnFirstRender()
     {
@@ -266,6 +279,23 @@ public partial class Playground
                 await Terminal.Error("Initialization failed! Unable to load system libraries");
                 await Terminal.WriteAndScroll(e.Message);
                 return;
+            }
+        }
+        
+        var gistId = NavManager.QueryString("gist");
+
+        if (!string.IsNullOrEmpty(gistId))
+        {
+            var gistData = await GetGistData(gistId) ?? new GistData();
+
+            if (gistData.Files.TryGetValue("Program.cs", out var gistSrcFile) && !string.IsNullOrEmpty(gistSrcFile.Content))
+            {
+                await SourceCodeEditor.SetValue(gistSrcFile.Content);
+            }
+            
+            if (gistData.Files.TryGetValue("Tests.cs", out var gistTestFile) && !string.IsNullOrEmpty(gistTestFile.Content))
+            {
+                await TestCodeEditor.SetValue(gistTestFile.Content);
             }
         }
 
