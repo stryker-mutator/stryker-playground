@@ -113,7 +113,9 @@ public class PlaygroundCompiler : IPlaygroundCompiler
         return CSharpCompilation.Create($"PlaygroundBuild-{isoDateTime}")
             .WithOptions(compilationOptions)
             .WithReferences(input.References)
-            .AddSyntaxTrees(input.SourceCode.SyntaxTree, input.TestCode.SyntaxTree, GetGlobalUsingsSyntaxTree(input.GlobalUsingDirectives))
+            .AddSyntaxTrees(input.SourceCode.SyntaxTree.WithFilePath("Program.cs"))
+            .AddSyntaxTrees(input.TestCode.SyntaxTree.WithFilePath("Tests.cs"))
+            .AddSyntaxTrees(GetGlobalUsingsSyntaxTree(input.GlobalUsingDirectives).WithFilePath("Globals.cs"))
             .AddSyntaxTrees(GetInstrumentationSyntaxTrees());
     }
 

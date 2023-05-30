@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using BlazorMonaco;
 using BlazorMonaco.Editor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.CodeAnalysis;
@@ -49,7 +50,7 @@ public partial class Playground
     public bool DisplayReport => _jsonReport is not null && _displayReport;
 
     private readonly IPlaygroundCompiler _compiler = new PlaygroundCompiler();
-    
+
     private readonly List<MetadataReference> _references = new();
 
     public async Task OnClick_StartMutationTests()
@@ -83,6 +84,9 @@ public partial class Playground
         var input = await GetInput();
         
         await Terminal.Clear();
+        await TestCodeEditor.ResetDeltaDecorations();
+        await SourceCodeEditor.ResetDeltaDecorations();
+        
         await Terminal.WriteAndScroll("Performing initial compilation (without mutating the source)");
         
         var initialCompilation = await _compiler.Compile(input);
@@ -185,6 +189,8 @@ public partial class Playground
     public async Task ExecuteUnitTests()
     {
         await Terminal.Clear();
+        await TestCodeEditor.ResetDeltaDecorations();
+        await SourceCodeEditor.ResetDeltaDecorations();
         await Terminal.WriteAndScroll("Compiling..");
 
         var compilation = await _compiler.Compile(await GetInput());
@@ -240,10 +246,48 @@ public partial class Playground
         
         await Terminal.Error($"Compilation failed with {errorCount} errors and {warnCount} warnings");
 
+        var sourceDecorations = new List<ModelDeltaDecoration>();
+        var testDecorations = new List<ModelDeltaDecoration>();
+
         foreach (var diagnostic in diagnostics.Where(x => x.Severity == DiagnosticSeverity.Error))
         {
             await Terminal.Error(diagnostic.ToString());
+            
+            var range = new BlazorMonaco.Range()
+            {
+                StartLineNumber = diagnostic.Location.GetLineSpan().StartLinePosition.Line + 1,
+                EndLineNumber = diagnostic.Location.GetLineSpan().EndLinePosition.Line + 1,
+                StartColumn = diagnostic.Location.GetLineSpan().StartLinePosition.Character + 1,
+                EndColumn = diagnostic.Location.GetLineSpan().EndLinePosition.Character + 1
+            };
+
+            var decor = new ModelDeltaDecoration
+            {
+                Range = range,
+                Options = new ModelDecorationOptions
+                {
+                    IsWholeLine = false,
+                    ClassName = "squiggly-underline",
+                    HoverMessage = new MarkdownString[]
+                    {
+                        new() { Value = $"[{diagnostic.Id}]" },
+                        new() { Value = diagnostic.GetMessage()},
+                    }
+                }
+            };
+
+            if (diagnostic.Location.SourceTree?.FilePath == "Program.cs")
+            {
+                sourceDecorations.Add(decor);
+            }
+            else if (diagnostic.Location.SourceTree?.FilePath == "Tests.cs")
+            {
+                testDecorations.Add(decor);
+            }
         }
+        
+        await SourceCodeEditor.DeltaDecorations(Array.Empty<string>(), sourceDecorations.ToArray());
+        await TestCodeEditor.DeltaDecorations(Array.Empty<string>(), testDecorations.ToArray());
     }
 
     private async Task<CompilationInput> GetInput()
