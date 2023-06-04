@@ -10,7 +10,7 @@ namespace Stryker.Playground.Domain.Tests;
 
 public class TestRunnerTest
 {
-    private static string GenerateTestClass(int testCount = 1, TestRunStatus status = TestRunStatus.PASSED)
+    private static string GenerateTestClass(int testCount, TestRunStatus status)
     {
         var sb = new StringBuilder(@"using NUnit.Framework;
 namespace Tests 
@@ -57,7 +57,7 @@ namespace Tests
             References = references,
             SourceCode = await SyntaxFactory.ParseSyntaxTree(string.Empty).GetRootAsync(),
             TestCode = await SyntaxFactory.ParseSyntaxTree(testCode).GetRootAsync(),
-            UsingStatementNamespaces = CompilationInput.DefaultNamespaces,
+            GlobalUsingDirectives = Array.Empty<string>()
         };
 
         return await _compiler.Compile(input);

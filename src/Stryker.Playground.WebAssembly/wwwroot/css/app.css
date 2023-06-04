@@ -51,15 +51,35 @@ html, body {
 }
 
 .main {
-    background-color: #1b1b1d;
+    background-color: #18181b;
     flex: 1;
     height: 100%;
     box-sizing: border-box;
 }
 
 .playground-editor {
-    height: 60vh !important;
+    height: 70vh;
     width: 100%;
+}
+
+
+@media screen and (max-width: 992px) {
+    .playground-editor {
+        height: 35vh; /* Different height for screens below 992 pixels */
+    }
+}
+
+.squiggly-underline {
+    position: relative;
+}
+
+.squiggly-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-bottom: .15em dashed red;
 }
 
 #stryker-report{
@@ -84,6 +104,12 @@ html, body {
 
 .nav-tabs {
     border-bottom: 2px solid #282828;
+}
+
+section.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .xterm .xterm-viewport{

@@ -34,8 +34,8 @@ public static class XTermExtensions
 
         var msg = mutationScore switch
         {
-            > 90 => Green(Bold(messageTxt)),
-            > 70 => Yellow(Bold(messageTxt)),
+            >= 80 => Green(Bold(messageTxt)),
+            >= 60 => Yellow(Bold(messageTxt)),
             _ => Red(Bold(messageTxt))
         };
 

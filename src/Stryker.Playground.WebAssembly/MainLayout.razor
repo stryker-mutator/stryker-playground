@@ -1,15 +1,37 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page">
-  
-  <nav class="navbar navbar-dark bg-dark px-3">
-    <a class="navbar-brand" href="#">
-      <img src="https://stryker-mutator.io/images/stryker.svg" width="32" height="32" class="d-inline-block align-top" alt="Stryker Mutator Logo">
-      <strong class="navbar-title">Stryker Playground</strong>
-    </a>
-  </nav>
+	
+	<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+		<div class="container-fluid ">
+			<a class="navbar-brand" href="#">
+				<img src="https://stryker-mutator.io/images/stryker.svg" width="32" height="32" class="d-inline-block align-top" alt="Stryker Mutator Logo">
+				<strong class="navbar-title">Stryker Playground</strong>
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse " id="navbarSupportedContent">
+				<ul class="navbar-nav ms-auto">
+					<li class="nav-item dropdown dropstart">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<i style="font-size: 1.75em" class="fab text-white fa-lg fa-github"></i>
+						</a>
 
-  <main class="main">
+						<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+							<li><a class="dropdown-item fw-semibold" target="_blank" rel="noopener noreferrer" href="https://github.com/stryker-mutator/stryker-js">StrykerJS (JS & TS)</a></li>
+							<li><a class="dropdown-item fw-semibold" target="_blank" rel="noopener noreferrer" href="https://github.com/stryker-mutator/stryker-net">Stryker.NET (C#)</a></li>
+							<li><a class="dropdown-item fw-semibold" target="_blank" rel="noopener noreferrer" href="https://github.com/stryker-mutator/stryker4s">Stryker4s (Scala)</a></li>
+							<li><a class="dropdown-item fw-semibold" target="_blank" rel="noopener noreferrer" href="https://github.com/stryker-mutator/mutation-testing-elements">Mutation Testing Elements</a></li>
+							<li><a class="dropdown-item fw-semibold" target="_blank" rel="noopener noreferrer" href="https://github.com/stryker-mutator/stryker-playground">Stryker Playground</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<main class="main">
     <div class="p-2" style="height:100%;">
       @Body
     </div>

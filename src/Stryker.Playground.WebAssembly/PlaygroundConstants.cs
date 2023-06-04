@@ -1,5 +1,6 @@
 ﻿using BlazorMonaco.Editor;
 using XtermBlazor;
+using static Crayon.Output;
 
 namespace Stryker.Playground.WebAssembly;
 
@@ -7,17 +8,19 @@ public class PlaygroundConstants
 {
     public static string[] WelcomeMessageLines = 
     {
-        "Welcome to the Stryker Playground!",
-        "This is an interactive demo of Stryker.NET, the mutation testing framework for .NET.",
+        "This is an interactive demo of Stryker.NET, the mutation testing framework for .NET!",
+        "Some technical limitations apply as this runs entirely in your browser using WebAssembly.",
+        $"For the full experience, install Stryker using {Bold("dotnet tool install -g dotnet-stryker")}",
         "",
         "Mutation testing is a technique for identifying weaknesses in your test suite by injecting bugs (mutations)",
         "into your source code and seeing if your tests can catch them.",
-        "This results in a mutation score, which is the percentage of mutations that are killed by your tests.",
-        "Code coverage only tells you how much of your code is executed by your tests, whereas mutation score measures how well",
-        "your tests are actually detecting faults in your code.",
+        "The result is a mutation score, which is the percentage of mutations that are 'killed' by your tests.",
+        "This goes beyond code coverage, because it evaluates how effective your tests are at detecting faults in your code.",
         "",
-        "To get started, run the mutation tests by clicking 'Run Mutation Tests'. This will show your initial mutation score.",
-        "Edit your tests (and source, if you want) and then rerun the mutation tests to see how your score improves."
+        $"To get started, run the mutation tests by clicking on '{Yellow(Bold("Run Stryker"))}' in the top right corner",
+        "Once executed, explore the generated mutation report to inspect the different types of mutations introduced.",
+        "",
+        "Try improving the mutation score by adding or editing test cases!",
     };
 
     
@@ -48,54 +51,60 @@ public class PlaygroundConstants
             Background = "#000000",
         },
         Columns = 160,
-        Rows = 12,
+        Rows = 14,
     };
     
     public static TimeSpan TestSuiteMaxDuration = TimeSpan.FromSeconds(5);
     
-    public static string UnitTestClassExample = @"using Playground.Example.Source;
-using NUnit.Framework;
+    public static string UnitTestClassExample = @"namespace Playground.Tests;
 
-namespace Playground.Example.Tests 
+public class CalculatorTests
 {
-    [TestFixture]
-    public class RoboBarTests
+    private readonly Calculator _calculator = new();
+
+    [TestCase(100, 0, 100)]
+    public void Addition_Returns_ExpectedResult(int a, int b, int expectedResult)
     {
-        [Test]
-        public void GetGreetings_WhenCustomerIs18Plus_GetsBeer()
-        {
-            var bar = new RoboBar();
-            var response = bar.GetGreeting(19);
+        var result = _calculator.Add(a, b);
 
-            Assert.That(response, Is.EqualTo(""Here have a beer!""));
-        }
+        result.ShouldBe(expectedResult);
+    }
+    
+    [TestCase(30, 0, 30)]
+    public void Subtraction_Returns_ExpectedResult(int a, int b, int expectedResult)
+    {
+        var result = _calculator.Subtract(a, b);
 
-        [Test]
-        public void GetGreetings_WhenCustomerIsUnderage_GetsDenied()
-        {
-            var bar = new RoboBar();
-            var response = bar.GetGreeting(17);
+        result.ShouldBe(expectedResult);
+    }
+    
+    [TestCase(1, 1, 1)]
+    [TestCase(2, 1, 2)]
+    public void Multiply_Returns_ExpectedResult(int a, int b, int expectedResult)
+    {
+        var result = _calculator.Multiply(a, b);
 
-            Assert.That(response, Is.EqualTo(""Sorry not today!""));
-        }
+        result.ShouldBe(expectedResult);
     }
 }";
     
-    public static string SourceCodeExample = @"using System;
+    public static string SourceCodeExample = @"namespace Playground.Source;
 
-namespace Playground.Example.Source 
+public class Calculator
 {
-    public class RoboBar
+    public int Add(int a, int b)
     {
-        public string GetGreeting(int age)
-        {
-            if(age >= 18)
-            {
-                return ""Here have a beer!"";
-            }
-
-            return ""Sorry not today!"";
-        }
+        return a + b;
+    }
+    
+    public int Subtract(int a, int b)
+    {
+        return a - b;
+    }
+    
+    public int Multiply(int a, int b)
+    {
+        return a * b;
     }
 }";
 

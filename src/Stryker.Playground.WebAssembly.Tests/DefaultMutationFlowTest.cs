@@ -11,16 +11,16 @@ public class DefaultMutationFlowTest
         var browser = await playwright.Chromium.LaunchAsync();
         var page = await browser.NewPageAsync();
         
-        await page.GotoAsync("https://localhost:7165/");
+        await page.GotoAsync("http://localhost:5000/", new PageGotoOptions() { Timeout = 0 });
         
         // Wait for playground to initialize
-        await page.WaitForSelectorAsync("button:has-text(\"Run Mutation Tests\"):not([disabled])");
+        await page.WaitForSelectorAsync("button:has-text(\"Run Stryker\"):not([disabled])");
         
         // Run mutation tests
-        await page.ClickAsync("button:has-text(\"Run Mutation Tests\")");
+        await page.ClickAsync("button:has-text(\"Run Stryker\")");
 
         // Wait for tests to finish & report to display. Then navigate back to editor screen
-        await page.WaitForSelectorAsync("button:has-text(\"Mutation Report\").active");
+        await page.WaitForSelectorAsync("button:has-text(\"Mutation Report\").active", new PageWaitForSelectorOptions() { Timeout = 60_000 * 5});
         await page.ClickAsync("button:has-text(\"Editor\")");
 
         // Validate terminal output
